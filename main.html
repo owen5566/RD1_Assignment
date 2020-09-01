@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/jquery-3.2.1.min.js"></script>
+
+</head>
+<body>
+    <label for="citys">Choose a city:</label>
+
+    <select name="city" id="city">
+    
+        
+    
+</select>
+<script>
+    $(function(){
+        $.ajax({
+            type:"POST",
+            url:"api/getCity",
+        }).then(function(e){
+            cityArr = JSON.parse(e);
+            console.log(cityArr);
+            // cityArr.forEach(element => {
+            //   $("#city").append(
+            //       $("<option/>").val(element[0]).text(element[1])
+            //   )  
+            // })
+        })
+    })
+</script>
+</body>
+</html>
