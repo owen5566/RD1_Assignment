@@ -1,14 +1,14 @@
 <?php 
 
-    // $curl = curl_init();
-    // $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-D620E1A7-8835-4C4D-928A-268DDFA7BA2E";
-    // curl_setopt($curl, CURLOPT_URL, $url);
-    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    // curl_setopt($curl, CURLOPT_HEADER, 0);
-    // $data = curl_exec($curl);
-    // echo ($data);
-    // curl_close($curl);
-
+    $curl = curl_init();
+    $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-D620E1A7-8835-4C4D-928A-268DDFA7BA2E";
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+    $data = curl_exec($curl);
+    echo ($data);
+    curl_close($curl);
+    die("");
     //
     $temp= file_get_contents("temp.json");
     

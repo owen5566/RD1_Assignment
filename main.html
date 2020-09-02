@@ -4,31 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap4/bootstrap.min.css">
     <script src="js/jquery-3.2.1.min.js"></script>
-
+    <script src="css/bootstrap4/popper.js"></script>
+    <script src="css/bootstrap4/bootstrap.min.js"></script>
+    <style>
+        .card{
+            margin: 20px;
+        }
+        .title{
+            font-size:x-large;
+            color: gray;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <label for="citys">Choose a city:</label>
-
-    <select name="city" id="city">
-    
-        
-    
-</select>
+    <div class="container">
+        <nav class="navbar bg-light">
+            <a class="navbar-brand">title here</a>
+            <form class="form-inline">
+                <label for="citys"> 選擇縣市：</label>
+                <select class ="custom-select" name="city" id="city">
+                </select>
+            </form>
+          </nav>
+        <div id ="titleCity" class="row title">臺北市</div>
+        <div class="row">
+            <div class="card col">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+              <div class="card col">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+              <div class="card col" >
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+        </div>
+    </div>
 <script>
     $(function(){
-        $.ajax({
+        let weatherObj ="";
+        getCityList();
+        $("#city").change(function(){
+            let geocodeToServer = $("#city").find(":selected").val();
+            $("#titleCity").text($("#city").find(":selected").text())
+            weatherObj = getWeather(geocodeToServer);
+            
+            // for(let i = 0 ;i < weatherObj.)
+        })
+        function getCityList(){
+            $.ajax({
             type:"POST",
             url:"api/getCity",
-        }).then(function(e){
+            }).then(function(e){
             cityArr = JSON.parse(e);
-            console.log(cityArr);
-            // cityArr.forEach(element => {
-            //   $("#city").append(
-            //       $("<option/>").val(element[0]).text(element[1])
-            //   )  
-            // })
+            // console.log(cityArr);
+            cityArr.forEach(element => {
+                if(element=="success"){return true;}
+                  $("#city").append(
+                  $("<option class = 'cityOptions'/>").val(element.geoCode).text(element.cityName)
+              )  
+            })
         })
+
+        }
+        function getWeather(geocode){
+            $.ajax({
+                type:"POST",
+                url:"api/getWeather",
+                data:{geocode:geocode}
+            }).then(function(e){
+                weatherObj = JSON.parse(e);
+                console.log(weatherObj);
+                return weatherObj;
+            })
+        }
     })
 </script>
 </body>
