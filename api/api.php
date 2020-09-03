@@ -28,8 +28,10 @@
     }
     function getWeather(){
         global $db;
+        date_default_timezone_set("Asia/Taipei");
+        $now = date('Y-m-d H:i:s');
         $geoCode = $_POST["geocode"];
-        if($result = $db->query("select * from weather where geoCode = $geoCode")){
+        if($result = $db->query("select geocode,startTime,endTime,PoP12h,minTemp,maxTemp,UVI,wx from weather where geoCode = $geoCode and endTime>'$now' order by startTime")){
             $data = ["success"];
             while($row = $result->fetch(PDO::FETCH_ASSOC)){
                 $data[] = $row;
