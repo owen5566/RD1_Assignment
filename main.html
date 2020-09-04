@@ -81,14 +81,22 @@
         //     console.log()
         // }, 1000);
         getCityList();
-        $("#city").change(function(){
-            let geocodeToServer = $("#city").find(":selected").val();
-            $("#titleCity").text($("#city").find(":selected").text())
-            getWeather(geocodeToServer);
-            
-            // for(let i = 0 ;i < weatherObj.)
+        
+        $.ajax({
+            type:"POST",
+            url:"UpdateWeather.php"
+        }).then((e)=>{
+            if(e!="lastestData"){
+                alert("更新！");
+            }
+            $("#city").change(function () {
+                    let geocodeToServer = $("#city").find(":selected").val();
+                    $("#titleCity").text($("#city").find(":selected").text())
+                    getWeather(geocodeToServer);
+                    // for(let i = 0 ;i < weatherObj.)
+                })
+                getWeather("63");
         })
-        getWeather("63");
         function getCityList(){
             $.ajax({
             type:"POST",
@@ -118,31 +126,46 @@
                 let count = 0;
                 weatherObj.forEach(element =>{
                     if(element=="success"){return true;}
-                    /// 
-                    let temp = new Date(element.startTime);
-                    let tempDate = (temp.getMonth()+1)+"/"+temp.getDate();
-                    if(count==0){let tempDay = temp.getDay();dateArr.push(tempDay);count++;}
-                    if(!(dateArr.includes(tempDate))){
-                        dateArr.push(tempDate);
-                    }
+                    ///weatherArr [0]pop12h [1]minT [2]maxT [3]wx [4]uvi [5]startT [6] endT
+                    ///:改寫成物件                    
                     weatherArr.push([element.PoP12h,element.minTemp,element.maxTemp,element.wx,element.UVI,element.startTime,element.endTime])
                 });
                 console.log(weatherArr);
-                
+                let nightAtFirst = (new Date(weatherArr[0][6]).getHours()==6)?1:0;
+                console.log("night=" +nightAtFirst);
+
                 //明後天
                 $("#card3").html("");
                 let str={
                         0:"今日",
+                        1:"明日白天",
                         2:"明日白天",
+                        3:"後天白天",
                         4:"後天白天"
                     }
-                for(i=0;i<6;i+=2){
                     
                     $("#card3").append(
                     `<div id = "today" class="card col">
                     <img src="" class="card-img-top" alt="...">
                     <div class="card-body">
-                    <h5 class="card-title">${str[i]}</h5>
+                    <div class="card-title"><h5>${str[0]}</h5>
+                        <div style="color:grey">${new Date(weatherArr[0][6]).getMonth()+1+"/"+new Date(weatherArr[0][6]).getDate()+" "+new Date(weatherArr[0][5]).getHours()+"~"+new Date(weatherArr[0][6]).getHours()}</div>
+                    <p id="wx" class="card-text"></p>
+                    <p id="tempRange" class="card-text">${weatherArr[0][1]}~${weatherArr[0][2]}°C</p>
+                    <i id ="pop" class="fa fa-umbrella"title="降雨機率">降雨機率 ${weatherArr[0][0]}%</i>
+                    <br>
+                    <i id ="uvi" class="fa fa-sun-o" title="紫外線指數">紫外線指數 ${weatherArr[0][4]}</i>
+                    </div>
+                    </div>`
+                    )
+                for(i=2-nightAtFirst;i<5;i+=2){
+                    
+                    $("#card3").append(
+                    `<div id = "today" class="card col">
+                    <img src="" class="card-img-top" alt="...">
+                    <div class="card-body">
+                    <div class="card-title"><h5>${str[i]}</h5>
+                        <div style="color:grey">${new Date(weatherArr[i][6]).getMonth()+1+"/"+new Date(weatherArr[i][6]).getDate()+" "+new Date(weatherArr[i][5]).getHours()+"~"+new Date(weatherArr[i][6]).getHours()}</div>
                     <p id="wx" class="card-text"></p>
                     <p id="tempRange" class="card-text">${weatherArr[i][1]}~${weatherArr[i][2]}°C</p>
                     <i id ="pop" class="fa fa-umbrella"title="降雨機率">降雨機率 ${weatherArr[i][0]}%</i>
@@ -157,13 +180,11 @@
                 $("#trDate").html("");
                 $("#trDay").html("");
                 $("#trNight").html("");
-
-                for(i=1;i<dateArr.length;i++){
+                
+                for(i=0+nightAtFirst;i<weatherArr.length;i+=2){
                     $("#trDate").append(
-                        $("<th/>").html(dateArr[i]+"<br>"+dayArr[(dateArr[0]+i-1)%7])
+                        $("<th/>").html(new Date(weatherArr[i][6]).getMonth()+1+"/"+new Date(weatherArr[i][6]).getDate()+"<br>"+dayArr[((new Date(weatherArr[i][6]).getDay())%7)])
                     )
-                }
-                for(i=0;i<weatherArr.length;i+=2){
                     $("#trDay").append(
                         $("<td />").html(
                             `<div class="row justify-content-center s">${weatherArr[i][3]}</div>`+
@@ -171,7 +192,7 @@
                         )
                     )
                 }
-                for(i=1;i<weatherArr.length;i+=2){
+                for(i=1+nightAtFirst;i<weatherArr.length;i+=2){
                     $("#trNight").append(
                         $("<td />").html(
                             `<div class="row justify-content-center s">${weatherArr[i][3]}</div>`+

@@ -3,8 +3,8 @@
     $db->exec("set names utf8");
     date_default_timezone_set("Asia/Taipei");
     $now = date('Y-m-d H:i:s');
-    if(compareTimeForUpdate($now)){
-        die("不更新");
+    if(!compareTimeForUpdate($now)){
+        die("lastestData");
     }
     function compareTimeForUpdate($time){
         global $db;
@@ -16,7 +16,7 @@
         }
         return true;
     }
-   
+    
     
     $curl = curl_init();
     $url = "https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-D620E1A7-8835-4C4D-928A-268DDFA7BA2E";
@@ -112,15 +112,16 @@
                 wd = "$windDir",
                 wx =    "$wx";
                 sql;
-                echo $sql;
-                // if($db->query($sql))
+                if($db->query($sql)){
+
+                }
                     
                  
                 // print_r($db->errorInfo());
             }
     }
     $time = date('Y-m-d H:i:s');
-    // $db->query("insert into record values(null,'$time')");
+    $db->query("insert into record values(null,'$time')");
     // var_dump($record);
     // var_dump($temp->records->locations[0]->location[0]->weatherElement);
 ?>
