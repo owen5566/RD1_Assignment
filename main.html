@@ -37,10 +37,10 @@
                 </select>
             </form>
           </nav>
+          <img id="cityImg" src="" class="img-fluid" alt="Responsive image">
         <div id ="titleCity" class="row title">臺北市</div>
         <div id = "card3" class="row">
             <div id = "today" class="card col">
-                <img src="" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">今天</h5>
                   <p id="wx" class="card-text"></p>
@@ -72,6 +72,23 @@
             
             </tbody>
           </table>
+          <div id ="titleRain" class="row title">觀測站雨量</div>
+          <div id = "obsTime"></div>
+          <table id="tableRain" class="table">
+            <thead>
+              <tr id = "trRain">
+                <th>行政區
+                <th>觀測站地點
+                <th>１Ｈ累積雨量(毫米)
+                <th>２４Ｈ累積雨量(毫米)
+            </tr>
+            </thead>
+            <tbody id = "rainData">
+             
+            </tbody>
+          </table>
+
+
     </div>
 <script>
     $(function(){
@@ -81,21 +98,33 @@
         //     console.log()
         // }, 1000);
         getCityList();
-        
+        let checkWeather ,checkRain= 0;
         $.ajax({
             type:"POST",
             url:"UpdateWeather.php"
         }).then((e)=>{
             if(e!="lastestData"){
-                alert("更新！");
+                alert("已更新氣象");
             }
             $("#city").change(function () {
                     let geocodeToServer = $("#city").find(":selected").val();
                     $("#titleCity").text($("#city").find(":selected").text())
                     getWeather(geocodeToServer);
+                    getRain($("#city").find(":selected").text());
                     // for(let i = 0 ;i < weatherObj.)
                 })
                 getWeather("63");
+                
+        })
+        $.ajax({
+            type:"POST",
+            url:"rain.php"
+        }).then((e)=>{
+            if(e!="lastestData"){
+                 alert("已更新觀測站雨量");
+                 getRain("臺北市");
+            }
+            
         })
         function getCityList(){
             $.ajax({
@@ -114,6 +143,7 @@
 
         }
         function getWeather(geocode){
+            $("#cityImg").attr("src",`img/${geocode}.jpg`)
             $.ajax({
                 type:"POST",
                 url:"api/getWeather",
@@ -146,7 +176,6 @@
                     
                     $("#card3").append(
                     `<div id = "today" class="card col">
-                    <img src="" class="card-img-top" alt="...">
                     <div class="card-body">
                     <div class="card-title"><h5>${str[0]}</h5>
                         <div style="color:grey">${new Date(weatherArr[0][6]).getMonth()+1+"/"+new Date(weatherArr[0][6]).getDate()+" "+new Date(weatherArr[0][5]).getHours()+"~"+new Date(weatherArr[0][6]).getHours()}</div>
@@ -162,7 +191,6 @@
                     
                     $("#card3").append(
                     `<div id = "today" class="card col">
-                    <img src="" class="card-img-top" alt="...">
                     <div class="card-body">
                     <div class="card-title"><h5>${str[i]}</h5>
                         <div style="color:grey">${new Date(weatherArr[i][6]).getMonth()+1+"/"+new Date(weatherArr[i][6]).getDate()+" "+new Date(weatherArr[i][5]).getHours()+"~"+new Date(weatherArr[i][6]).getHours()}</div>
@@ -201,6 +229,29 @@
                     )
                 }
                 
+            })
+        }
+        function getRain(cityName){
+            $.ajax({
+                type:"POST",
+                url:"api/getRain",
+                data:{city:cityName}
+            }).then(function(e){
+                $("#rainData").html("");
+                $("#obsTime").html("");
+                let rainArr = JSON.parse(e)
+                $("#obsTime").text('觀測時間: '+rainArr[0].obsTime);
+                // console.log(rainArr);
+                rainArr.forEach(element=> {
+                    $("#rainData").append(
+                        $("<tr/>").append(
+                            $("<td/>").text(element.town),
+                            $("<td/>").text(element.location),
+                            $("<td/>").text((element.rain1h=="-998")?0:element.rain1h),
+                            $("<td/>").text((element.rain24h=="-999")?故障:element.rain24h)
+                        )
+                    )
+                })
             })
         }
     })

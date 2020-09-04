@@ -11,7 +11,9 @@
         break;
         case "POST getWeather":
             echo getWeather();
-            
+        break;
+        case "POST getRain":
+            echo getRain();
         break;
     }
 
@@ -38,5 +40,18 @@
             }return json_encode($data, JSON_UNESCAPED_UNICODE);
         }else {
             return 0;
+        }
+    }
+    function getRain(){
+        global $db;
+        if(isset($_POST["city"])){
+            $city = $_POST["city"];
+            if($result = $db->query("select * from rain where city = '$city' order by town")){
+                while($row = $result->fetch(PDO::FETCH_ASSOC)){
+                    $data[] = $row;
+                }return json_encode($data, JSON_UNESCAPED_UNICODE);
+            }else {
+                return 0;
+            }
         }
     }

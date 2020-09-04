@@ -11,7 +11,7 @@
         $result = $db->query("SELECT lastUpdateTime FROM `record` ORDER BY lastUpdateTime DESC LIMIT 1");
         if($row = $result->fetch()){
             if(date("Y-m-d",strtotime($row[0]))==date("Y-m-d",strtotime($time))){
-                return false;
+                    return false;
             }
         }
         return true;
