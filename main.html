@@ -120,11 +120,13 @@
             type:"POST",
             url:"rain.php"
         }).then((e)=>{
-            if(e!="lastestData"){
+            console.log(e);
+            if(e!="lastest"){
                  alert("已更新觀測站雨量");
                  getRain("臺北市");
+                 return ;
             }
-            
+            getRain("臺北市");
         })
         function getCityList(){
             $.ajax({
@@ -178,7 +180,7 @@
                     `<div id = "today" class="card col">
                     <div class="card-body">
                     <div class="card-title"><h5>${str[0]}</h5>
-                        <div style="color:grey">${new Date(weatherArr[0][6]).getMonth()+1+"/"+new Date(weatherArr[0][6]).getDate()+" "+new Date(weatherArr[0][5]).getHours()+"~"+new Date(weatherArr[0][6]).getHours()}</div>
+                        <div style="color:grey">${new Date(weatherArr[0][5]).getMonth()+1+"/"+new Date(weatherArr[0][5]).getDate()+" "+new Date(weatherArr[0][5]).getHours()+"~"+new Date(weatherArr[0][6]).getHours()}</div>
                     <p id="wx" class="card-text"></p>
                     <p id="tempRange" class="card-text">${weatherArr[0][1]}~${weatherArr[0][2]}°C</p>
                     <i id ="pop" class="fa fa-umbrella"title="降雨機率">降雨機率 ${weatherArr[0][0]}%</i>
