@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS `RD1_db` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `RD1_db`;
 
+--------------^^^分開輸入vvv---------------
+
 CREATE TABLE `cityCode` (
   `geoCode` int(11) NOT NULL,
   `cityName` varchar(5) NOT NULL
