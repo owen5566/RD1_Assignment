@@ -302,7 +302,7 @@
                             $("<td/>").text(element.town),
                             $("<td/>").text(element.location),
                             $("<td/>").text((element.rain1h=="-998")?0:element.rain1h),
-                            $("<td/>").text((element.rain24h=="-999")?故障:element.rain24h)
+                            $("<td/>").html((element.rain24h=="-999")?"<p style='color:red'>故障":element.rain24h)
                         )
                     )
                 })
